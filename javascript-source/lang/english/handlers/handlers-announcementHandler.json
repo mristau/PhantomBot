@@ -1,0 +1,8 @@
+{
+  "announcementhandler.usage": "Usage: !announcement [toggleonline / onlinemessage]",
+  "announcementhandler.onlinetoggle.on": "Online notification is enabled.",
+  "announcementhandler.onlinetoggle.off": "Online notification is disabled.",
+  "announcementhandler.onlinemessage.usage": "Usage: !announcement onlinemessage '(name) is live now! Playing (game): (title)'",
+  "announcementhandler.onlinemessage.success": "New online message is set",
+  "announcementhandler.onlinemessage.reset": "online message is reset"
+}

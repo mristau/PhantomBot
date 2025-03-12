@@ -25,10 +25,10 @@ $(function () {
 
     // Get all module toggles.
     socket.getDBValues('alerts_get_modules', {
-        tables: ['modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules'],
+        tables: ['modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules'],
         keys: ['./handlers/followHandler.js', './handlers/subscribeHandler.js', './handlers/bitsHandler.js', './handlers/clipHandler.js',
             './systems/greetingSystem.js', './systems/welcomeSystem.js', './handlers/donationHandler.js', './handlers/raidHandler.js', './handlers/tipeeeStreamHandler.js',
-            './handlers/streamElementsHandler.js']
+            './handlers/streamElementsHandler.js', './handlers/announcementHandler.js']
     }, true, function (e) {
         // Handle the settings button.
         let keys = Object.keys(e),
@@ -983,6 +983,47 @@ $(function () {
                                         $('#streamelements-alert').modal('toggle');
                                         // Alert the user.
                                         toastr.success('Successfully updated StreamElements alert settings!');
+                                    });
+                                });
+                        }
+                    }).modal('toggle');
+        });
+    });
+
+    // Announcement alert settings.
+    $('#announcementHandlerSettings').on('click', function () {
+        socket.getDBValues('alerts_get_announcement_settings', {
+            tables: ['announcementSettings', 'announcementSettings'],
+            keys: ['onlineToggle', 'onlineMessage']
+        }, true, function (e) {
+            helpers.getModal('announcement-alert', 'Stream-Announcement Settings', 'Save', $('<form/>', {
+                'role': 'form'
+            })
+                    // Add the toggle for announcement alerts.
+                    .append(helpers.getDropdownGroup('announcement-online-toggle', 'Enable Stream-Announcement Alerts', (helpers.isTrue(e.onlineToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
+                            'If a message should be sent in the channel when the Stream goes live.'))
+                    // Add the text area for the announcement message.
+                    .append(helpers.getTextAreaGroup('announcement-online-message', 'text', 'Stream-Announcement Message', '', e.onlineMessage,
+                            'Message said when stream goes online. Tags: (name), (game), (title)', false)),
+                    function () { // Callback once the user clicks save.
+                        let announcementOnlineToggle = $('#announcement-online-toggle').find(':selected').text() === 'Yes',
+                        announcementOnlineMsg = $('#announcement-online-message');
+
+                        // Make sure the user has someone in each box.
+                        switch (false) {
+                            case helpers.handleInputString(announcementOnlineMsg):
+                                break;
+                            default:
+                                socket.updateDBValues('alerts_update_announcement_settings', {
+                                    tables: ['announcementSettings', 'announcementSettings'],
+                                    keys: ['onlineToggle', 'onlineMessage'],
+                                    values: [announcementOnlineToggle, announcementOnlineMsg.val()]
+                                }, function () {
+                                    socket.sendCommand('alerts_update_announcement_settings_cmd', 'reloadannouncement', function () {
+                                        // Close the modal.
+                                        $('#announcement-alert').modal('toggle');
+                                        // Alert the user.
+                                        toastr.success('Successfully updated Stream Announcement alert settings!');
                                     });
                                 });
                         }

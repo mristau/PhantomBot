@@ -60,6 +60,13 @@
         }
 
         /*
+         * Reloads the stream announcement vars.
+         */
+        if ($.equalsIgnoreCase(command, 'reloadannouncement')) {
+            $.reloadAnnouncement();
+        }
+
+        /*
          * Sets permissions on a command.
          */
         if ($.equalsIgnoreCase(command, 'permcomsilent')) {
@@ -425,6 +432,7 @@
             $.registerChatCommand('./core/panelCommands.js', 'reloadbet', $.PERMISSION.Panel);
             $.registerChatCommand('./core/panelCommands.js', 'tipeeestreamreload', $.PERMISSION.Panel);
             $.registerChatCommand('./core/panelCommands.js', 'streamelementsreload', $.PERMISSION.Panel);
+            $.registerChatCommand('./core/panelCommands.js', 'reloadannouncement', $.PERMISSION.Panel);
             $.registerChatCommand('./core/panelCommands.js', 'setcommunitysilent', $.PERMISSION.Panel);
             $.registerChatCommand('./core/panelCommands.js', 'reloadclip', $.PERMISSION.Panel);
             $.registerChatCommand('./core/panelCommands.js', 'reloadkill', $.PERMISSION.Panel);
