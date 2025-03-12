@@ -1,13 +1,13 @@
 {
-    "discord.greetingssystem.usage": "Usage: !greetingssystem [jointoggle / parttoggle / joinmessage / partmessage / joinrole / channel]",
-    "discord.greetingssystem.join.toggle": "Join announcements have been $1.",
-    "discord.greetingssystem.part.toggle": "Part announcements have been $1.",
-    "discord.greetingssystem.join.message.usage": "Usage: !greetingssystem joinmessage [message] - Tags: (name), (role), and (@name)",
-    "discord.greetingssystem.join.message.set": "Join announcements message has been set to: $1.",
-    "discord.greetingssystem.part.message.usage": "Usage: !greetingssystem partmessage [message] - Tags: (name) and (@name)",
-    "discord.greetingssystem.part.message.set": "Part announcements message has been set to: $1.",
-    "discord.greetingssystem.channel.usage": "Usage: !greetingssystem channel [channel name]",
-    "discord.greetingssystem.channel.set": "Greeting announcements will now be made in channel $1",
-    "discord.greetingssystem.joinrole.usage": "Usage: !greetingssystem joinrole [role name]",
-    "discord.greetingssystem.joinrole.set": "Default role has been set to $1"
+    "discord.greetingssystem.usage": "Verwendung: !greetingssystem [jointoggle / parttoggle / joinmessage / partmessage / joinrole / channel]",
+    "discord.greetingssystem.join.toggle": "Begrüßungsankündigungen wurden $1.",
+    "discord.greetingssystem.part.toggle": "Abschiedsankündigungen wurden $1.",
+    "discord.greetingssystem.join.message.usage": "Verwendung: !greetingssystem joinmessage [Nachricht] - Tags: (name), (role) und (@name)",
+    "discord.greetingssystem.join.message.set": "Begrüßungsnachricht wurde auf: $1 gesetzt.",
+    "discord.greetingssystem.part.message.usage": "Verwendung: !greetingssystem partmessage [Nachricht] - Tags: (name) und (@name)",
+    "discord.greetingssystem.part.message.set": "Abschiedsankündigungsnachricht wurde auf: $1 gesetzt.",
+    "discord.greetingssystem.channel.usage": "Verwendung: !greetingssystem channel [Kanalname]",
+    "discord.greetingssystem.channel.set": "Begrüßungsankündigungen werden nun im Kanal $1 gemacht.",
+    "discord.greetingssystem.joinrole.usage": "Verwendung: !greetingssystem joinrole [Rollenname]",
+    "discord.greetingssystem.joinrole.set": "Standardrolle wurde auf $1 gesetzt."
 }

@@ -1,11 +1,11 @@
 {
-    "keywordhandler.add.usage": "Usage: !keyword add [flags] [keyword] [response]. Flags can by empty or any combination of \"--regex\", \"--case-sensitive\".",
-    "keywordhandler.keyword.404": "That keyword does not exist.",
-    "keywordhandler.keyword.added": "keyword \"$1\" added!",
-    "keywordhandler.keyword.removed": "keyword \"$1\" has been removed!",
-    "keywordhandler.keyword.usage": "Usage: !keyword [add / remove / cooldown] [keyword]",
-    "keywordhandler.remove.usage": "Usage: !keyword remove [keyword]",
-    "keywordhandler.cooldown.usage": "Usage: !keyword cooldown [keyword] [seconds] - Use -1 to remove a cooldown.",
-    "keywordhandler.cooldown.removed": "Cooldown for keyword $1 has been removed.",
-    "keywordhandler.cooldown.set": "Cooldown for keyword $1 has been set to $2 seconds."
+    "keywordhandler.add.usage": "Verwendung: !keyword add [Flags] [Schlüsselwort] [Antwort]. Flags können leer sein oder eine beliebige Kombination aus \"--regex\", \"--case-sensitive\".",
+    "keywordhandler.keyword.404": "Dieses Schlüsselwort existiert nicht.",
+    "keywordhandler.keyword.added": "Schlüsselwort \"$1\" hinzugefügt!",
+    "keywordhandler.keyword.removed": "Schlüsselwort \"$1\" wurde entfernt!",
+    "keywordhandler.keyword.usage": "Verwendung: !keyword [add / remove / cooldown] [Schlüsselwort]",
+    "keywordhandler.remove.usage": "Verwendung: !keyword remove [Schlüsselwort]",
+    "keywordhandler.cooldown.usage": "Verwendung: !keyword cooldown [Schlüsselwort] [Sekunden] - Verwenden Sie -1, um ein Cooldown zu entfernen.",
+    "keywordhandler.cooldown.removed": "Cooldown für Schlüsselwort $1 wurde entfernt.",
+    "keywordhandler.cooldown.set": "Cooldown für Schlüsselwort $1 wurde auf $2 Sekunden gesetzt."
 }

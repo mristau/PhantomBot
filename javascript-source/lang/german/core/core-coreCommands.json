@@ -1,15 +1,15 @@
 {
-    "corecommands.shoutout.usage": "Usage: !$1 (streamer)",
-    "corecommands.shoutout.offline": "Go give $1 a follow at $2 - they were last seen playing: $3!",
-    "corecommands.shoutout.online": "Go give $1 a follow at $2 - they are currently playing: $3!",
-    "corecommands.shoutoutapi.enable": "!shoutout will now also trigger the Twitch /shoutout command",
-    "corecommands.shoutoutapi.disable": "!shoutout will not trigger the Twitch /shoutout command",
-    "corecommands.shoutout.no.game": "Hey! Go give $1 a follow at $2!",
-    "corecommands.settimevar.usage": "Usage: !settimevar (varName) (Optional: Time to Set)",
-    "corecommands.settimevar.success": "Set the timevar $1 to the time $2",
-    "corecommands.synconline.success": "Syncing title, game, and online state with Twitch API. This may take a moment",
-    "corecommands.synconline.failure": "Stream status cache is not ready yet, please try again in 30 seconds",
-    "corecommands.setcommandrestriction.usage": "Usage: !setcommandrestriction [none/online/offline] [command] (subcommand) - The subcommand variable is optional",
-    "corecommands.setcommandrestriction.error": "$1 !$2 does not exist!",
-    "corecommands.setcommandrestriction.success": "Successfully changed the $1 restriction for !$2 to $3"
+    "corecommands.shoutout.usage": "Verwendung: !$1 (Streamer)",
+    "corecommands.shoutout.offline": "Gib $1 einen Follow unter $2 - zuletzt gesehen beim Spielen von: $3!",
+    "corecommands.shoutout.online": "Gib $1 einen Follow unter $2 - sie spielen gerade: $3!",
+    "corecommands.shoutoutapi.enable": "!shoutout wird nun auch den Twitch-/shoutout-Befehl auslösen.",
+    "corecommands.shoutoutapi.disable": "!shoutout wird den Twitch-/shoutout-Befehl nicht mehr auslösen.",
+    "corecommands.shoutout.no.game": "Hey! Gib $1 einen Follow unter $2!",
+    "corecommands.settimevar.usage": "Verwendung: !settimevar (varName) (Optional: Zeit, die eingestellt werden soll)",
+    "corecommands.settimevar.success": "Die Zeitvariable $1 wurde auf $2 gesetzt.",
+    "corecommands.synconline.success": "Synchronisiere Titel, Spiel und Online-Status mit der Twitch-API. Dies kann einen Moment dauern.",
+    "corecommands.synconline.failure": "Der Streamstatus-Cache ist noch nicht bereit, bitte versuche es in 30 Sekunden erneut.",
+    "corecommands.setcommandrestriction.usage": "Verwendung: !setcommandrestriction [none/online/offline] [Befehl] (Unterbefehl) - Die Unterbefehl-Variable ist optional.",
+    "corecommands.setcommandrestriction.error": "$1 !$2 existiert nicht!",
+    "corecommands.setcommandrestriction.success": "Die $1-Beschränkung für !$2 wurde erfolgreich auf $3 geändert."
 }

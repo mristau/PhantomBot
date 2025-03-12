@@ -1,5 +1,5 @@
 {
-    "discord.pointsystem.self.points": "You currently have $1.",
-    "discord.pointsystem.other.points": "$1 currently has $2.",
-    "discord.pointsystem.no.points.other": "That user currently has no $1."
+    "discord.pointsystem.self.points": "Du hast derzeit $1.",
+    "discord.pointsystem.other.points": "$1 hat derzeit $2.",
+    "discord.pointsystem.no.points.other": "Dieser Benutzer hat derzeit keine $1."
 }

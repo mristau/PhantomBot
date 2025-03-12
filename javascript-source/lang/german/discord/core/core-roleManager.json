@@ -1,12 +1,12 @@
 {
-    "discord.rolemanager.usage": "Usage: !rolemanager [togglesyncpermissions / togglesyncranks / blacklist]",
-    "discord.rolemanager.permission.sync.on": "Bot permissions will now be synced with users who have their account linked with the bot.",
-    "discord.rolemanager.permission.sync.off": "Bot permissions will no longer be synced.",
-    "discord.rolemanager.ranks.sync.on": "Ranks will now be synced with users who have their account linked with the bot.",
-    "discord.rolemanager.ranks.sync.off": "Ranks will no longer be synced.",
-    "discord.rolemanager.blacklist.usage": "Usage: !rolemanager blacklist [add / remove] [permission or rank] - Blacklist a ranks or permissions from being set.",
-    "discord.rolemanager.blacklist.add.usage": "Usage: !rolemanager blacklist add [permission or rank] - Blacklist a ranks or permissions from being set.",
-    "discord.rolemanager.blacklist.add.success": "Group $1 has been added to the blacklist!",
-    "discord.rolemanager.blacklist.remove.usage": "Usage: !rolemanager blacklist remove [permission or rank]",
-    "discord.rolemanager.blacklist.remove.success": "Group $1 has been removed from the blacklist."
+    "discord.rolemanager.usage": "Verwendung: !rolemanager [togglesyncpermissions / togglesyncranks / blacklist]",
+    "discord.rolemanager.permission.sync.on": "Bot-Berechtigungen werden jetzt mit Benutzern synchronisiert, die ihr Konto mit dem Bot verknüpft haben.",
+    "discord.rolemanager.permission.sync.off": "Bot-Berechtigungen werden nicht mehr synchronisiert.",
+    "discord.rolemanager.ranks.sync.on": "Ränge werden jetzt mit Benutzern synchronisiert, die ihr Konto mit dem Bot verknüpft haben.",
+    "discord.rolemanager.ranks.sync.off": "Ränge werden nicht mehr synchronisiert.",
+    "discord.rolemanager.blacklist.usage": "Verwendung: !rolemanager blacklist [add / remove] [Berechtigung oder Rang] - Fügt Berechtigungen oder Ränge zur Blacklist hinzu oder entfernt sie.",
+    "discord.rolemanager.blacklist.add.usage": "Verwendung: !rolemanager blacklist add [Berechtigung oder Rang] - Fügt Berechtigungen oder Ränge zur Blacklist hinzu.",
+    "discord.rolemanager.blacklist.add.success": "Gruppe $1 wurde zur Blacklist hinzugefügt!",
+    "discord.rolemanager.blacklist.remove.usage": "Verwendung: !rolemanager blacklist remove [Berechtigung oder Rang]",
+    "discord.rolemanager.blacklist.remove.success": "Gruppe $1 wurde von der Blacklist entfernt."
 }

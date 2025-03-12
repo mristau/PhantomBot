@@ -1,11 +1,11 @@
 {
-    "discord.cooldown.coolcom.usage": "Usage: !coolcom [command] [seconds / global=seconds / user=seconds] [global=seconds / user=seconds] - Using -1 for the seconds removes the cooldown. Only specifying seconds assumes global only if no secondary argument is given!",
-    "discord.cooldown.coolcom.set": "Cooldown for command !$1 has been set to $2 seconds.",
-    "discord.cooldown.coolcom.remove": "Cooldown for command !$1 has been removed.",
-    "discord.cooldown.cooldown.usage": "Usage: !cooldown [setdefault]",
-    "discord.cooldown.default.set": "The default cooldown for commands without one has been set to $1 seconds.",
-    "discord.cooldown.default.usage": "Usage: !cooldown setdefault [seconds] - Set a cooldown for commands that don't have one.",
-    "discord.cooldown.coolcom.setGlobal": "Cooldown for command !$1 has globally been set to $2 seconds.",
-    "discord.cooldown.coolcom.setUser": "Cooldown for command !$1 has been set to $2 seconds individually for each user.",
-    "discord.cooldown.coolcom.setCombo": "Cooldown for command !$1 has globally been set to $2 seconds and to $3 seconds individually for each user."
+    "discord.cooldown.coolcom.usage": "Verwendung: !coolcom [Befehl] [Sekunden / global=Sekunden / user=Sekunden] [global=Sekunden / user=Sekunden] - Die Verwendung von -1 für die Sekunden entfernt den Cooldown. Wenn nur Sekunden angegeben werden, wird global angenommen, es sei denn, es wird kein sekundäres Argument angegeben!",
+    "discord.cooldown.coolcom.set": "Cooldown für Befehl !$1 wurde auf $2 Sekunden gesetzt.",
+    "discord.cooldown.coolcom.remove": "Cooldown für Befehl !$1 wurde entfernt.",
+    "discord.cooldown.cooldown.usage": "Verwendung: !cooldown [setdefault]",
+    "discord.cooldown.default.set": "Der Standard-Cooldown für Befehle ohne eigenen Cooldown wurde auf $1 Sekunden gesetzt.",
+    "discord.cooldown.default.usage": "Verwendung: !cooldown setdefault [Sekunden] - Setzt einen Cooldown für Befehle, die keinen eigenen Cooldown haben.",
+    "discord.cooldown.coolcom.setGlobal": "Cooldown für Befehl !$1 wurde global auf $2 Sekunden gesetzt.",
+    "discord.cooldown.coolcom.setUser": "Cooldown für Befehl !$1 wurde individuell für jeden Benutzer auf $2 Sekunden gesetzt.",
+    "discord.cooldown.coolcom.setCombo": "Cooldown für Befehl !$1 wurde global auf $2 Sekunden und individuell für jeden Benutzer auf $3 Sekunden gesetzt."
 }

@@ -1,9 +1,9 @@
 {
-    "wordcounter.usage": "Usage: !wordcounter [add / remove] !count [word]",
-    "wordcounter.add.usage": "Usage: !wordcounter add [word]",
-    "wordcounter.added": " has been added to the word counter list!",
-    "wordcounter.remove.usage": "Usage: !wordcounter remove [word]",
-    "wordcounter.err.404": "That word is not in the counter list.",
-    "wordcounter.removed": " has been removed to the word counter list!",
-    "wordcounter.count": "$1 has been said $2 times."
+    "wordcounter.usage": "Verwendung: !wordcounter [add / remove] !count [word]",
+    "wordcounter.add.usage": "Verwendung: !wordcounter add [word]",
+    "wordcounter.added": " wurde zur Wortzählerliste hinzugefügt!",
+    "wordcounter.remove.usage": "Verwendung: !wordcounter remove [word]",
+    "wordcounter.err.404": "Dieses Wort ist nicht in der Zählerliste.",
+    "wordcounter.removed": " wurde aus der Wortzählerliste entfernt!",
+    "wordcounter.count": "$1 wurde $2 Mal gesagt."
 }

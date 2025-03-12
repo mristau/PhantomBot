@@ -1,13 +1,13 @@
 {
-    "roll.rolled": "$1 rolls a [$2] and [$3]. ",
-    "roll.doubleone": "Snake eyes for $1! ",
-    "roll.doubletwo": "Hard four for $1! ",
-    "roll.doublethree": "Hard six for $1! ",
-    "roll.doublefour": "Hard eight for $1! ",
-    "roll.doublefive": "Hard ten for $1! ",
-    "roll.doublesix": "Boxcars to the max!!! $1! ",
-    "roll.rewards.usage": "usage: !roll rewards [double 1's] [2's] [3's] [4's] [5's] [6's]. Currently: $1",
-    "roll.rewards.success": "Updated rewards for the dice roll.",
-    "roll.allowwhenoffline.enabled": "Rolling is allowed while channel is offline.",
-    "roll.allowwhenoffline.disabled": "Rolling is prevented while channel is offline."
+    "roll.rolled": "$1 würfelt eine [$2] und eine [$3].",
+    "roll.doubleone": "Doppelte Eins für $1!",
+    "roll.doubletwo": "Harter Vierer für $1!",
+    "roll.doublethree": "Harter Sechser für $1!",
+    "roll.doublefour": "Harter Achter für $1!",
+    "roll.doublefive": "Harter Zehner für $1!",
+    "roll.doublesix": "Doppelsechser für $1!",
+    "roll.rewards.usage": "Verwendung: !roll rewards [doppelte 1en] [2en] [3en] [4en] [5en] [6en]. Derzeit: $1",
+    "roll.rewards.success": "Belohnungen für das Würfeln aktualisiert.",
+    "roll.allowwhenoffline.enabled": "Würfeln ist erlaubt, während der Kanal offline ist.",
+    "roll.allowwhenoffline.disabled": "Würfeln ist nicht erlaubt, während der Kanal offline ist."
 }

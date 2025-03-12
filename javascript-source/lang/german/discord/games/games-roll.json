@@ -1,11 +1,11 @@
 {
-    "discord.roll.rolled": "$1 rolls a [$2] and [$3]. ",
-    "discord.roll.doubleone": "Snake eyes for $1! ",
-    "discord.roll.doubletwo": "Hard four for $1! ",
-    "discord.roll.doublethree": "Hard six for $1! ",
-    "discord.roll.doublefour": "Hard eight for $1! ",
-    "discord.roll.doublefive": "Hard ten for $1! ",
-    "discord.roll.doublesix": "Boxcars to the max!!! $1! ",
-    "discord.roll.rewards.usage": "Usage: !roll rewards [double 1's] [2's] [3's] [4's] [5's] [6's]. Currently: $1",
-    "discord.roll.rewards.success": "Updated rewards for the dice roll."
+    "discord.roll.rolled": "$1 würfelt eine [$2] und [$3].",
+    "discord.roll.doubleone": "Schlangenaugen für $1!",
+    "discord.roll.doubletwo": "Harter Vierer für $1!",
+    "discord.roll.doublethree": "Harter Sechser für $1!",
+    "discord.roll.doublefour": "Harter Achter für $1!",
+    "discord.roll.doublefive": "Harter Zehner für $1!",
+    "discord.roll.doublesix": "Boxcars zum Maximum!!! $1!",
+    "discord.roll.rewards.usage": "Verwendung: !roll rewards [doppel 1en] [2en] [3en] [4en] [5en] [6en]. Aktuell: $1",
+    "discord.roll.rewards.success": "Belohnungen für den Würfelwurf wurden aktualisiert."
 }

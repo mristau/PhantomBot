@@ -1,9 +1,9 @@
 {
-    "discord.followhandler.usage": "Usage: !followhandler [toggle / message / channel]",
-    "discord.followhandler.follow.toggle": "Follow announcements have been $1.",
-    "discord.followhandler.follow.message.usage": "Usage: !followhandler message [message] - Tag: (name)",
-    "discord.followhandler.follow.message.set": "Follow announcements message set to: $1",
-    "discord.followhandler.follow.channel.usage": "Usage: !followhandler channel [channel name]",
-    "discord.followhandler.follow.channel.set": "Follow announcements will now be made in channel $1",
-    "discord.followhandler.follow.embedtitle": "New Follower!"
+    "discord.followhandler.usage": "Verwendung: !followhandler [toggle / message / channel]",
+    "discord.followhandler.follow.toggle": "Follower-Ankündigungen wurden $1.",
+    "discord.followhandler.follow.message.usage": "Verwendung: !followhandler message [Nachricht] - Tag: (name)",
+    "discord.followhandler.follow.message.set": "Follower-Ankündigungsnachricht festgelegt auf: $1",
+    "discord.followhandler.follow.channel.usage": "Verwendung: !followhandler channel [Kanalname]",
+    "discord.followhandler.follow.channel.set": "Follower-Ankündigungen werden nun im Kanal $1 gemacht",
+    "discord.followhandler.follow.embedtitle": "Neuer Follower!"
 }
