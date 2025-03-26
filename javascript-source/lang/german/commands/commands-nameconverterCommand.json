@@ -1,6 +1,6 @@
 {
     "namechange.default": "Verwendung: !namechange [alter Name] [neuer Name]",
     "namechange.updating": "Aktualisiere den Namen $1 zu $2 in allen Datenbanktabellen. Dies kann einige Zeit dauern.",
-    "namechange.success": "Benutzername $1 wurde in $2 Tabellen auf $3 aktualisiert!",
+    "namechange.success": "Benutzername $1 wurde in $3 Tabellen auf $2 aktualisiert!",
     "namechange.notfound": "Benutzername $1 wurde in keiner Tabelle gefunden."
 }
