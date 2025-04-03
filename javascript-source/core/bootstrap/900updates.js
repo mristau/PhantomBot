@@ -834,6 +834,12 @@
         }
     });
 
+    addUpdate('3.14.5.0', 'installedv3.14.5.0', function () {
+        if ($.getIniDbBoolean('timeSettings', 'timeLevel', false)) {
+            $.getSetIniDbBoolean('timeSettings', 'alertActiveOnly', false);
+        }
+    });
+
     // ------ Add updates above this line in execution order ------
     if ($.inidb.FileExists('updates') && $.getIniDbBoolean('updates', updates[0].variable)) {
         $.inidb.SetBoolean('updates', '', 'installedNewBot', true);
