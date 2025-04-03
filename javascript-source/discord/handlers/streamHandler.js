@@ -215,10 +215,6 @@
                         s = $.replace(s, '(name)', $.viewer.broadcaster().name());
                     }
 
-                    if (s.match(/\(url\)/)) {
-                        s = $.replace(s, '(url)', 'https://twitch.tv/' + $.channelName)
-                    }
-
                     // Only say this when there is a mention.
                     if (s.indexOf('@') !== -1) {
                         msg = $.discord.say(channelName, s);
