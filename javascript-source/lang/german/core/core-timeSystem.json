@@ -27,6 +27,8 @@
     "timesystem.take.usage": "Verwendung: \"!time take [Name] [Betrag]\"",
     "timesystem.autolevel.chat.enabled": "Automatische Level-Chat-Benachrichtigungen sind jetzt aktiviert!",
     "timesystem.autolevel.chat.disabled": "Automatische Level-Chat-Benachrichtigungen sind jetzt deaktiviert.",
+    "timesystem.autolevel.chat.activeonly.enabled": "Automatische Level-Chat-Benachrichtigungen werden jetzt nur noch für aktive Chatter gesendet!",
+    "timesystem.autolevel.chat.activeonly.disabled": "Automatische Level-Chat-Benachrichtigungen werden jetzt für alle Chatter gesendet, einschließlich Lurkern.",
     "timesystem.modonlyusercheck.disabled": "Jeder kann die im Chat verdiente Zeit anderer sehen.",
     "timesystem.modonlyusercheck.enabled": "Nur Mods können die im Chat verdiente Zeit anderer anfordern.",
     "get.long.time.string.short": " $1 Tage, $2 Stunden und $3 Minuten.",
