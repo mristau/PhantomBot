@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,6 +62,9 @@ public class CommandEvent extends Event {
         }
         if (command == null) {
             throw new NullPointerException("command");
+        }
+        if (command.charAt(0) == CaselessProperties.instance().getPropertyAsChar("commandprefix", '!')) {
+            command = command.substring(1);
         }
         this.sender = sender;
         this.command = command;
@@ -143,7 +146,7 @@ public class CommandEvent extends Event {
      * @return {@code true} if the message appears to be a command
      */
     public static boolean isCommand(String message) {
-        /*
+        /**
          * @botproperty commandprefix - A single character, used as the command prefix for Twitch. Default `'!'`
          * @botpropertycatsort commandprefix 100 20 Twitch
          */

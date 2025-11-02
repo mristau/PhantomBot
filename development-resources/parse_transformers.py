@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
+# Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -30,11 +30,11 @@
 #  * @cancels?[| sometimes]
 #  */
 
-# types: str, int, bool
+# types: str, int, number, bool
 
 # separators: " " (space), "=" (equals), "|" (pipe)
 
-# custom arg types: str, int, bool, array, dictionary, javaObject[className]
+# custom arg types: str, int, number, bool, array, dictionary, javaObject[className]
 
 # Uses Doc-comment definition
 
@@ -96,7 +96,7 @@ def parse_file(fpath, lines):
     usestransformer_index = next((i for i,x in enumerate(usestransformers) if fpath.replace('\\', '/') == x["script"]), -1)
     for line in lines:
         line = line.strip()
-        if line == "/*" and state == 0:
+        if line.startswith("/*") and state == 0:
             state = 1
         if line == "*/" and state > 0:
             if state == 3 or state == 6:

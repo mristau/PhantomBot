@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -659,6 +659,8 @@
                     let command = event.getCommand();
                     let args = event.getArgs();
 
+                    consoleDebug("Start command trace: " + command);
+
                     let subCommand = $.getSubCommandFromArguments(command, args);
                     let isMod = $.checkUserPermission(sender, event.getTags(), $.PERMISSION.Mod);
 
@@ -717,21 +719,23 @@
                         } else {
                             event.handeled();
                             consoleDebug("Command is alias: " + command + " <> " + alias);
+                            alias = alias.trim();
                             if (alias.indexOf(';') === -1) {
                                 parts = alias.split(' ');
                                 aliasCommand = parts.shift();
                                 aliasArguments = parts.join(' ');
 
-                                $.command.run(sender, aliasCommand, aliasArguments + ' ' + args.join(' '), event.getTags());
+                                $.command.run(sender, aliasCommand, aliasArguments + ($.strlen(aliasArguments) > 0 && args.length > 0 ? ' ' : '') + args.join(' '), event.getTags());
                             } else {
                                 parts = alias.split(';');
 
                                 for (let i = 0; i < parts.length; i++) {
-                                    subcmd = parts[i].split(' ');
+                                    let salias = parts[i].trim();
+                                    subcmd = salias.split(' ');
                                     aliasCommand = subcmd.shift();
                                     aliasArguments = subcmd.join(' ');
 
-                                    $.command.run(sender, aliasCommand, aliasArguments + ' ' + args.join(' '), event.getTags());
+                                    $.command.run(sender, aliasCommand, aliasArguments + ($.strlen(aliasArguments) > 0 && args.length > 0 ? ' ' : '') + args.join(' '), event.getTags());
                                 }
                             }
                             return;

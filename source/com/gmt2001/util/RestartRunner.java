@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ import com.gmt2001.util.concurrent.ExecutorService;
 
 import net.engio.mbassy.listener.Handler;
 import tv.phantombot.CaselessProperties;
+import tv.phantombot.PhantomBot;
 import tv.phantombot.RepoVersion;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -209,6 +209,15 @@ $(function () {
             }
         });
     };
+
+    socket.consoleCommand = function (callback_id, command, callback) {
+        generateCallBack(callback_id, [], false, true, callback);
+
+        sendToSocket({
+            console_command: callback_id,
+            message: command
+        });
+    }
 
     socket.getDiscordChannelList = function (callback_id, callback) {
         // Genetate a callback.

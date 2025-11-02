@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,8 +46,11 @@
     /*
      * @transformer buildArgs
      * @formula (n:int) the n-th argument (escaped by default)
+     * @formula (n:int!) the n-th argument, with trailing escape characters stripped (escaped by default)
      * @formula (n:int=tag:str) the n-th argument, if given, else another tag to replace this one
+     * @formula (n:int!=tag:str) the n-th argument, if given, with trailing escape characters stripped, else another tag to replace this one
      * @formula (n:int|default:str) the n-th argument, if given, else a provided default value
+     * @formula (n:int!|default:str) the n-th argument, if given, with trailing escape characters stripped, else a provided default value
      * @labels twitch discord commandevent basic
      * @example Caster: !addcom !love (sender) loves (1).
      * User: !love monkeys
@@ -69,13 +72,19 @@
         return function (args) {
             let arg = args.event.getArgs()[n - 1];
             if (!args.args) {
-                return {result: arg !== undefined ? arg : ''};
+                return {result: arg !== undefined ? (args.argsep === '!' ? $.transformers.stripTrailingEscape(arg) : arg) : ''};
             } else {
                 if (arg !== undefined) {
+                    if (args.argsep.startsWith('!')) {
+                        arg = $.transformers.stripTrailingEscape(arg);
+                    }
                     return {
                         result: arg,
                         cache: true
                     };
+                }
+                if (args.argsep.startsWith('!')) {
+                    args.argsep = args.argsep.substring(1);
                 }
                 return {
                     result: (args.argsep === '=' ? '(' : '') + $.transformers.escapeTags(args.args) + (args.argsep === '=' ? ')' : ''),
@@ -121,13 +130,14 @@
     /*
      * @transformer echo
      * @formula (echo) all arguments passed to the command
+     * @formula (echo!) all arguments passed to the command, with trailing escape characters stripped
      * @labels twitch discord commandevent basic
      * @example Caster: !addcom !echo (echo)
      * User: !echo test test
      * Bot: test test
      */
     function echo(args) {
-        return {result: args.event.getArguments() ? args.event.getArguments() : ''};
+        return {result: args.event.getArguments() ? (args.argsep === '!' ? $.transformers.stripTrailingEscape(args.event.getArguments()) : args.event.getArguments()) : ''};
     }
 
     /*

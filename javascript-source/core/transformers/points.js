@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,9 +21,11 @@
      * @formula (addpoints amount:int) add points to the sender
      * @formula (addpoints amount:int user:str) add points to the given user
      * @labels twitch commandevent points
+     * @cancels sometimes
      */
     function addpoints(args) {
         let pargs = $.parseArgs(args.args, ' ');
+        let cancel = true;
 
         if (pargs !== null && !isNaN(pargs[0])) {
             let user = args.event.getSender();
@@ -37,11 +39,12 @@
             }
 
             if (user !== null) {
-                $.inidb.incr('points', user, amount);
+                cancel = $.points.give(user, amount) === null;
             }
         }
 
         return {
+            cancel: cancel,
             result: ''
         };
     }
@@ -57,7 +60,7 @@
         if (pargs !== null && !isNaN(pargs[0])) {
             let amount = parseInt(pargs[0]);
 
-            $.giveAll(amount, args.event.getSender());
+            $.points.giveToAll(amount);
         }
 
         return {
@@ -149,12 +152,14 @@
 
     /*
      * @transformer takepoints
-     * @formula (takepoints amount:int) take points from the sender
-     * @formula (takepoints amount:int user:str) take points from the given user
+     * @formula (takepoints amount:int) take points from the sender; zero out if they don't have enough
+     * @formula (takepoints amount:int user:str) take points from the given user; zero out if they don't have enough
      * @labels twitch commandevent points
+     * @cancels sometimes
      */
     function takepoints(args) {
         let pargs = $.parseArgs(args.args, ' ');
+        let cancel = true;
 
         if (pargs !== null && !isNaN(pargs[0])) {
             let user = args.event.getSender();
@@ -168,15 +173,45 @@
             }
 
             if (user !== null) {
-                if ($.getIniDbNumber('points', user) > amount) {
-                    $.inidb.decr('points', user, amount);
-                } else {
-                    $.inidb.SetInteger('points', '', user, 0);
-                }
+               cancel =  $.points.take(user, amount, true) === null;
             }
         }
 
         return {
+            cancel: cancel,
+            result: ''
+        };
+    }
+
+    /*
+     * @transformer takepointsorcancel
+     * @formula (takepointsorcancel amount:int) take points from the sender; cancel if they don't have enough
+     * @formula (takepointsorcancel amount:int user:str) take points from the given user; cancel if they don't have enough
+     * @labels twitch commandevent points
+     * @cancels sometimes
+     */
+    function takepointsorcancel(args) {
+        let pargs = $.parseArgs(args.args, ' ');
+        let cancel = true;
+
+        if (pargs !== null && !isNaN(pargs[0])) {
+            let user = args.event.getSender();
+            let amount = parseInt(pargs[0]);
+
+            if (pargs.length > 1) {
+                user = pargs[1].toLowerCase();
+                if (!$.username.exists(user)) {
+                    user = null;
+                }
+            }
+
+            if (user !== null) {
+                cancel = $.points.take(user, amount) === null;
+            }
+        }
+
+        return {
+            cancel: cancel,
             result: ''
         };
     }
@@ -192,7 +227,7 @@
         if (pargs !== null && !isNaN(pargs[0])) {
             let amount = parseInt(pargs[0]);
 
-            $.takeAll(amount, args.event.getSender());
+            $.points.takeFromAll(amount);
         }
 
         return {
@@ -205,9 +240,11 @@
      * @formula (transferpoints amount:int touser:str) transfer points from the sender to the given user
      * @formula (transferpoints amount:int touser:str fromuser:str) transfer points from the given fromuser to the given touser
      * @labels twitch commandevent points
+     * @cancels sometimes
      */
     function transferpoints(args) {
         let pargs = $.parseArgs(args.args, ' ');
+        let cancel = true;
 
         if (pargs !== null && !isNaN(pargs[0]) && pargs.length > 1) {
             let fromuser = args.event.getSender();
@@ -226,14 +263,17 @@
             }
 
             if (fromuser !== null && touser !== null) {
-                if ($.getIniDbNumber('points', fromuser) >= amount) {
-                    $.inidb.decr('points', fromuser, amount);
-                    $.inidb.incr('points', touser, amount);
+                try {
+                    let result = $.points.transfer(fromuser, touser, amount);
+                    cancel = result[fromuser] === null || result[touser] === null;
+                } catch (e) {
+                    $.log.error(e);
                 }
             }
         }
 
         return {
+            cancel: cancel,
             result: ''
         };
     }
@@ -246,6 +286,7 @@
         new $.transformers.transformer('points', ['twitch', 'commandevent', 'points'], points),
         new $.transformers.transformer('price', ['twitch', 'commandevent', 'points'], price),
         new $.transformers.transformer('takepoints', ['twitch', 'commandevent', 'points'], takepoints),
+        new $.transformers.transformer('takepointsorcancel', ['twitch', 'commandevent', 'points'], takepointsorcancel),
         new $.transformers.transformer('takepointsfromall', ['twitch', 'commandevent', 'points'], takepointsfromall),
         new $.transformers.transformer('transferpoints', ['twitch', 'commandevent', 'points'], transferpoints)
     ];

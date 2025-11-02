@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +62,8 @@ $(function () {
             opus: 'audio/ogg; codecs="opus"',
             ogg: 'audio/ogg; codecs="vorbis"',
             oga: 'audio/ogg; codecs="vorbis"',
-            webm: 'audio/webm; codecs="vorbis"'
+            webm: 'audio/webm; codecs="vorbis"',
+            flac: 'audio/flac'
         };
 
         for (let x in formats) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -153,6 +153,11 @@ public final class SQLiteStore2 extends Datastore2 {
     public DataType<String> longTextDataType() {
         return LONGTEXT;
     }
+    
+    @Override
+    public boolean defaultBackupPreference() {
+        return true;
+    }
 
     @Override
     public boolean supportsBackup() {
@@ -180,17 +185,32 @@ public final class SQLiteStore2 extends Datastore2 {
 
     @Override
     public void restoreBackup(String fileName) throws FileNotFoundException {
-        Path p = PathValidator.getRealPath(Paths.get("./dbbackup/"));
+        Path p = PathValidator.getRealPath(Paths.get("./dbbackup/", fileName));
 
         if (!Files.exists(p)) {
             throw new FileNotFoundException(p.toString());
         }
 
-        try ( Connection connection = this.getConnection()) {
-            try ( Statement statement = connection.createStatement()) {
-                statement.execute("RESTORE FROM '" + p.toString() + "'");
+        try (Connection connection = this.getConnection()) {
+                try (PreparedStatement tablesStatement = connection.prepareStatement("SELECT name FROM sqlite_schema WHERE type='table';")) {
+                    try (ResultSet rs = tablesStatement.executeQuery()) {
+                        while (rs.next()) {
+                            try (PreparedStatement dropStatement = connection.prepareStatement("DROP TABLE " + rs.getString("name"))) {
+                                dropStatement.execute();
+                            }
+                        }
+                    }
+                }
+                try (PreparedStatement vacuumStatement = connection.prepareStatement("VACUUM;")) {
+                    vacuumStatement.execute();
+                }
+                try (PreparedStatement checkpointStatement = connection.prepareStatement("PRAGMA wal_checkpoint(TRUNCATE);")) {
+                    checkpointStatement.execute();
+                }
+                try (PreparedStatement restoreStatement = connection.prepareStatement("RESTORE FROM '" + p.toString() + "'")) {
+                    restoreStatement.execute();
+                }
                 com.gmt2001.Console.debug.println("Restored SQLite backup from " + p.toString());
-            }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }

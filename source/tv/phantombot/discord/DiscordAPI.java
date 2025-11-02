@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -609,7 +609,7 @@ public class DiscordAPI extends DiscordUtil {
 
                 boolean isAdmin = DiscordAPI.instance().isAdministratorAsync(iUser).or(Mono.delay(Duration.ofSeconds(DiscordAPI.ISADMINTIMEOUT)).thenReturn(false)).onErrorReturn(false).block();
 
-                /*
+                /**
                  * @botproperty discordcommandprefix - A single character, used as the command prefix for Discord. Default `'!'`
                  * @botpropertycatsort discordcommandprefix 50 150 Discord
                  */

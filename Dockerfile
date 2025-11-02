@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
+# Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -142,7 +142,7 @@ VOLUME "${DATADIR}"
 
 WORKDIR "${BASEDIR}"
 
-HEALTHCHECK --interval=5m --timeout=1m --start-period=2m CMD /opt/python3/venv/bin/python /opt/PhantomBot/healthcheck.py --show-success --config-dir /opt/PhantomBot_data/config/ --hook-dir /opt/PhantomBot_data/config/healthcheck/
+HEALTHCHECK --interval=5m --timeout=1m --start-period=5m CMD /opt/python3/venv/bin/python /opt/PhantomBot/healthcheck.py --show-success --config-dir /opt/PhantomBot_data/config/ --hook-dir /opt/PhantomBot_data/config/healthcheck/
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 

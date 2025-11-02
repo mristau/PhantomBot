@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -282,11 +282,17 @@
         if ($.equalsIgnoreCase(command, 'quote')) {
             quote = getQuote(args[0]);
             if (quote.length > 0) {
+                let user = $.viewer.getByLogin(quote[0]);
+                if (user == null) {
+                    user = quote[0];
+                } else {
+                    user = user.name();
+                }
                 quoteStr = $.getIniDbString('settings', 'quoteMessage', $.lang.get('quotesystem.get.success'));
                 quoteStr = quoteStr.replace('(id)', (quote.length === 5 ? quote[4].toString() : quote[3].toString()))
                                     .replace('(quote)', quote[1])
                                     .replace('(userrank)', $.resolveRank(quote[0]))
-                                    .replace('(user)', $.viewer.getByLogin(quote[0]).name())
+                                    .replace('(user)', user)
                                     .replace('(game)', (quote.length === 5 ? quote[3] : "Some Game"))
                                     .replace('(date)', $.getLocalTimeString($.getSetIniDbString('settings', 'quoteDateFormat', 'dd-MM-yyyy'), parseInt(quote[2])));
                 $.say(quoteStr);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -425,6 +425,42 @@
      */
     function unbanUser(username) {
         Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('/unban ' + username);
+    }
+
+    /*
+     * @function modUser Mods the user
+     *
+     * @param {string} username The user to mod
+     */
+    function modUser(username) {
+        Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('/mod ' + username);
+    }
+
+    /**
+     * @function unmodUser Un-mods the user
+     *
+     * @param {string} username The user to un-mod
+     */
+    function unmodUser(username) {
+        Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('/unmod ' + username);
+    }
+
+    /*
+     * @function vipUser VIP the user
+     *
+     * @param {string} username The user to VIP
+     */
+    function vipUser(username) {
+        Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('/vip ' + username);
+    }
+
+    /**
+     * @function unvipUser Un-VIPs the user
+     *
+     * @param {string} username The user to un-VIP
+     */
+    function unvipUser(username) {
+        Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('/unvip ' + username);
     }
 
     /**
@@ -2283,6 +2319,10 @@
     $.untimeoutUser = untimeoutUser;
     $.banUser = banUser;
     $.unbanUser = unbanUser;
+    $.modUser = modUser;
+    $.unmodUser = unmodUser;
+    $.vipUser = vipUser;
+    $.unvipUser = unvipUser;
     $.purgeUser = purgeUser;
     $.deleteMessage = deleteMessage;
     $.permitUserLink = permitUser;

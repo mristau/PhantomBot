@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +26,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.SecureRandom;
 import java.time.DateTimeException;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -43,10 +41,6 @@ import com.gmt2001.PathValidator;
 import com.gmt2001.RollbarProvider;
 import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.datastore.DataStore;
-import com.gmt2001.datastore.DataStoreConverter;
-import com.gmt2001.datastore.H2Store;
-import com.gmt2001.datastore.MariaDBStore;
-import com.gmt2001.datastore.MySQLStore;
 import com.gmt2001.datastore.SqliteStore;
 import com.gmt2001.datastore2.Datastore2;
 import com.gmt2001.httpclient.HttpClient;
@@ -54,6 +48,7 @@ import com.gmt2001.httpclient.URIUtil;
 import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.gmt2001.ratelimiters.ExponentialBackoff;
 import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
+import com.gmt2001.twitch.TwitchClientCredentialsFlow;
 import com.gmt2001.twitch.cache.ViewerCache;
 import com.gmt2001.twitch.eventsub.EventSub;
 import com.gmt2001.twitch.tmi.TwitchMessageInterface;
@@ -111,6 +106,7 @@ public final class PhantomBot implements Listener {
 
     /* Bot Information */
     private TwitchAuthorizationCodeFlow authflow;
+    private TwitchClientCredentialsFlow appflow;
 
     /* Caches */
     private FollowersCache followersCache;
@@ -317,6 +313,8 @@ public final class PhantomBot implements Listener {
 
         this.authflow = new TwitchAuthorizationCodeFlow(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"));
         boolean authflowrefreshed = this.authflow.checkAndRefreshTokens();
+        this.appflow = new TwitchClientCredentialsFlow(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"));
+        this.appflow.checkAndRefreshToken();
         if (authflowrefreshed) {
             ConfigurationManager.getConfiguration();
         }
@@ -338,32 +336,6 @@ public final class PhantomBot implements Listener {
 
         /* Load the datastore */
         Datastore2.init();
-        String oldds = CaselessProperties.instance().getProperty("datastore", "h2store").toLowerCase();
-        if (!oldds.startsWith("sqlite")) {
-            if (Datastore2.instance() != null && DataStore.instance().GetFileList().length == 0 && SqliteStore.hasDatabase(CaselessProperties.instance().getProperty("datastoreconfig", ""))
-                && SqliteStore.isAvailable(CaselessProperties.instance().getProperty("datastoreconfig", ""))
-                && SqliteStore.instance().GetFileList().length > 0) {
-                    if (oldds.startsWith("mysql")) {
-                        String mySqlConn;
-                        if (CaselessProperties.instance().getProperty("mysqlport", "").isEmpty()) {
-                            mySqlConn = "jdbc:mysql://" + CaselessProperties.instance().getProperty("mysqlhost", "") + "/" + CaselessProperties.instance().getProperty("mysqlname", "") + "?useSSL=" + (CaselessProperties.instance().getPropertyAsBoolean("mysqlssl", false) ? "true" : "false") + "&user=" + CaselessProperties.instance().getProperty("mysqluser", "") + "&password=" + CaselessProperties.instance().getProperty("mysqlpass", "");
-                        } else {
-                            mySqlConn = "jdbc:mysql://" + CaselessProperties.instance().getProperty("mysqlhost", "") + ":" + CaselessProperties.instance().getProperty("mysqlport", "") + "/" + CaselessProperties.instance().getProperty("mysqlname", "") + "?useSSL=" + (CaselessProperties.instance().getPropertyAsBoolean("mysqlssl", false) ? "true" : "false") + "&user=" + CaselessProperties.instance().getProperty("mysqluser", "") + "&password=" + CaselessProperties.instance().getProperty("mysqlpass", "");
-                        }
-                        DataStoreConverter.convertDataStore(MySQLStore.instance(mySqlConn), SqliteStore.instance());
-                    } else if (oldds.startsWith("mariadb")) {
-                        String mariaDBConn;
-                        if (CaselessProperties.instance().getProperty("mysqlport", "").isEmpty()) {
-                            mariaDBConn = "jdbc:mariadb://" + CaselessProperties.instance().getProperty("mysqlhost", "") + "/" + CaselessProperties.instance().getProperty("mysqlname", "") + "?useSSL=" + (CaselessProperties.instance().getPropertyAsBoolean("mysqlssl", false) ? "true" : "false") + "&user=" + CaselessProperties.instance().getProperty("mysqluser", "") + "&password=" + CaselessProperties.instance().getProperty("mysqlpass", "");
-                        } else {
-                            mariaDBConn = "jdbc:mariadb://" + CaselessProperties.instance().getProperty("mysqlhost", "") + ":" + CaselessProperties.instance().getProperty("mysqlport", "") + "/" + CaselessProperties.instance().getProperty("mysqlname", "") + "?useSSL=" + (CaselessProperties.instance().getPropertyAsBoolean("mysqlssl", false) ? "true" : "false") + "&user=" + CaselessProperties.instance().getProperty("mysqluser", "") + "&password=" + CaselessProperties.instance().getProperty("mysqlpass", "");
-                        }
-                        DataStoreConverter.convertDataStore(MariaDBStore.instance(mariaDBConn), SqliteStore.instance());
-                    } else if (oldds.startsWith("h2")) {
-                        DataStoreConverter.convertDataStore(H2Store.instance(CaselessProperties.instance().getProperty("datastoreconfig", "")), SqliteStore.instance());
-                    }
-                }
-        }
 
         /* Set the oauth key in the Twitch api and perform a validation. */
         this.validateOAuth();
@@ -395,6 +367,11 @@ public final class PhantomBot implements Listener {
             TwitchValidate.instance().validateChat(CaselessProperties.instance().getProperty("oauth"), "CHAT (oauth)");
 
             TwitchValidate.instance().checkOAuthInconsistencies(this.getChannelName());
+        }
+
+        if (!CaselessProperties.instance().getProperty("appoauth", "").isEmpty()) {
+            /* Validate the chat OAUTH token. */
+            TwitchValidate.instance().validateApp(CaselessProperties.instance().getProperty("appoauth"), "APP (appoauth)");
         }
     }
 
@@ -501,6 +478,10 @@ public final class PhantomBot implements Listener {
 
     public TwitchAuthorizationCodeFlow getAuthFlow() {
         return this.authflow;
+    }
+
+    public TwitchClientCredentialsFlow getAppFlow() {
+        return this.appflow;
     }
 
     public void reconnect() {
@@ -955,11 +936,11 @@ public final class PhantomBot implements Listener {
 
         /* Perform SQLite datbase backups. */
         /**
-         * @botproperty backupdbauto - If `true`, the database is backed up to the ./backups folder every so often. Default `true`
+         * @botproperty backupdbauto - If `true`, the database is backed up to the ./backups folder every so often. Default is based on preference of the driver. SQLiteStore2 and H2Store2 defeault to `true`
          * @botpropertycatsort backupdbauto 400 30 Datastore
          *
          */
-        if (CaselessProperties.instance().getPropertyAsBoolean("backupdbauto", CaselessProperties.instance().getPropertyAsBoolean("backupsqliteauto", true))) {
+        if (CaselessProperties.instance().getPropertyAsBoolean("backupdbauto", CaselessProperties.instance().getPropertyAsBoolean("backupsqliteauto", Datastore2.instance().defaultBackupPreference()))) {
             this.doBackupDB();
         }
 
@@ -1414,19 +1395,17 @@ public final class PhantomBot implements Listener {
      * Backup the database, keeping so many days.
      */
     private void doBackupDB() {
-        if (!this.getDataStore().canBackup()) {
+        if (!Datastore2.instance().supportsBackup()) {
             return;
         }
 
         ExecutorService.scheduleAtFixedRate(() -> {
             Thread.currentThread().setName("tv.phantombot.PhantomBot::doBackupDB");
 
-            String timestamp = LocalDateTime.now(getTimeZoneId()).format(DateTimeFormatter.ofPattern("ddMMyyyy.hhmmss"));
-
-            this.getDataStore().backupDB("phantombot.auto.backup." + timestamp);
+            Datastore2.instance().backup("phantombot.auto." + Datastore2.instance().backupFileName());
 
             try {
-                Iterator<File> dirIterator = FileUtils.iterateFiles(new File("./dbbackup"), new WildcardFileFilter("phantombot.auto.*"), null);
+                Iterator<File> dirIterator = FileUtils.iterateFiles(new File("./dbbackup"), WildcardFileFilter.builder().setWildcards("phantombot.auto.*").get(), null);
                 while (dirIterator.hasNext()) {
                     File backupFile = dirIterator.next();
                     /**

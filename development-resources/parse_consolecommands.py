@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
+# Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# Doc-comment definition
+# Doc-comment description
 
 # /**
 #  * @consolecommand commandName [requiredParameter] (optionalParameter) - Description
@@ -31,36 +31,28 @@ commands = []
 def parse_file(fpath, lines):
     global commands
     state = 0
+    cmd = ""
+    description  = ""
     for line in lines:
         line = line.strip()
-        if line == "/**" and state == 0:
+        if line.startswith("/*") and state == 0:
+            cmd = ""
             state = 1
         if line == "*/" and state > 0:
+            if cmd != "":
+                commands.append({"command": cmd.replace('|', '&#124;'), "description": description.replace('|', '&#124;'), "source": fpath})
             state = 0
         if line.startswith("* ") and len(line) > 2 and state > 0:
             line = line[2:].strip()
             if line.startswith("@consolecommand"):
                 line = line[16:].strip()
-                cmd_pos = line.find(" ")
+                cmd_pos = line.find("-")
                 if cmd_pos == -1:
                     cmd_pos = len(line)
                 cmd = line[0:cmd_pos].strip()
-                commands.append({"command": cmd, "definition": line, "source": fpath})
-
-def output_command(command, hlevel):
-    lines = []
-    h = "#"
-    while len(h) < hlevel:
-        h = h + "#"
-    lines.append(h + " " + command["command"] + '\n')
-    lines.append('\n')
-    lines.append("Defined in source file: _" + command["source"] + "_" + '\n')
-    lines.append('\n')
-    lines.append(command["definition"] + '\n')
-    lines.append('\n')
-    lines.append("&nbsp;" + '\n')
-    lines.append('\n')
-    return lines
+                description = line[cmd_pos + 1:].strip()
+            else:
+                description += line
 
 for subdir, dirs, files in os.walk("./source"):
     for fname in files:
@@ -77,19 +69,16 @@ lines.append("**These console commands are available directly in the bot console
 lines.append('\n')
 lines.append("&nbsp;" + '\n')
 lines.append('\n')
-lines.append("<!-- toc -->" + '\n')
-lines.append('\n')
-lines.append("<!-- tocstop -->" + '\n')
-lines.append('\n')
-lines.append("&nbsp;" + '\n')
-lines.append('\n')
 lines.append("Parameters enclosed in square brackets `[ ]` are required when using the command" + '\n')
 lines.append('\n')
 lines.append("Parameters enclosed in parenthesis `( )` are optional when using the command" + '\n')
 lines.append('\n')
+lines.append("<!-- table -->" + '\n')
+lines.append("| Command | Description |" + '\n')
+lines.append("| :--- | :--- |" + '\n')
 
 for command in commands:
-    lines.extend(output_command(command, 3))
+    lines.append("| " + command["command"] + " | " + command["description"] + " |" + '\n')
 
 lines = lines[:len(lines) - 3]
 

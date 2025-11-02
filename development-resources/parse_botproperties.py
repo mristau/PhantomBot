@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
+# Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -49,12 +49,15 @@ ignoreproperties = [
     "apiexpires",
     "apioauth",
     "apirefresh",
+    "appoauth",
+    "appexpires",
     "appsecret",
     "apptoken",
     "apptokenexpires",
     "backupsqliteauto",
     "backupsqlitehourfrequency",
     "backupsqlitekeepdays",
+    "datastoreconfig",
     "newsetup",
     "oauth",
     "oauthexpires",
@@ -76,7 +79,7 @@ def parse_file(lines):
     state = 0
     for line in lines:
         line = line.strip()
-        if line == "/**" and state == 0:
+        if line.startswith("/*") and state == 0:
             state = 1
         if line == "*/" and state > 0:
             state = 0

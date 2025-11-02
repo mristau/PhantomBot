@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -506,6 +506,15 @@ public abstract class Datastore2 {
      * @return {@code true} if supported
      */
     public boolean supportsBackup() {
+        return false;
+    }
+
+    /**
+     * Indicates if this driver prefers automatic backups to be enabled by default
+     *
+     * @return {@code true} if enabled by default
+     */
+    public boolean defaultBackupPreference() {
         return false;
     }
 

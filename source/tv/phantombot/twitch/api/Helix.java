@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,8 +59,6 @@ import reactor.core.publisher.Mono;
 import reactor.util.annotation.Nullable;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
-import tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus;
-import tv.phantombot.twitch.api.Helix.PredictionStatus;
 
 /**
  * Start of the Helix API. This class will handle the rate limits.
@@ -75,8 +73,14 @@ public class Helix {
     // The base URL for Twitch API Helix.
     private static final String BASE_URL = "https://api.twitch.tv/helix";
     private static final int QUEUE_TIME = 5000;
-    private static final int CACHE_TIME = 30000;
-    private static final int MUTATOR_CACHE_TIME = 1000;
+    /**
+     * Cache time for queries, in ms.
+     */
+    public static final int CACHE_TIME = 30000;
+    /**
+     * Cache time for mutators, in ms.
+     */
+    public static final int MUTATOR_CACHE_TIME = 1000;
     private static final int RATELIMIT_DEFMAX = 120;
     private static final int WARNING_INTERVAL_MINS = 5;
 
@@ -397,6 +401,56 @@ public class Helix {
         }
 
         return "";
+    }
+
+    /**
+     * Sends a custom GET request to the specified endpoint.
+     * 
+     * Responses may be cached for a short time (see {@link Helix.CACHE_TIME}).
+     *
+     * @param endpoint The API endpoint to query, such as "/channels?broadcaster_id=123456".
+     * @return A {@link JSONObject} with the response
+     * @throws JSONException
+     */
+    public Mono<JSONObject> customQueryAsync(String endpoint)
+            throws JSONException {
+
+        return this.handleQueryAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.GET, endpoint);
+        });
+    }
+
+    /**
+     * Sends a custom mutation request to the specified endpoint.
+     * 
+     * Responses may be cached for a short time (see {@link Helix.MUTATOR_CACHE_TIME}).
+     * 
+     * @param method The {@link HttpMethod} to use.
+     * @param endpoint The API endpoint to mutate, such as {@c "/channels?broadcaster_id=123456"}.
+     * @return A {@link JSONObject} with the response
+     * @throws JSONException
+     */
+    public Mono<JSONObject> customMutatorAsync(HttpMethod method, String endpoint) throws JSONException {
+        return this.handleMutatorAsync(endpoint, () -> {
+            return this.handleRequest(method, endpoint);
+        });
+    }
+
+    /**
+     * Sends a custom mutation request to the specified endpoint.
+     * 
+     * Responses may be cached for a short time (see {@link Helix.MUTATOR_CACHE_TIME}).
+     * 
+     * @param method The {@link HttpMethod} to use.
+     * @param endpoint The API endpoint to mutate, such as {@c "/channels?broadcaster_id=123456"}.
+     * @param js A {@link JSONObject} containing the HTTP body.
+     * @return A {@link JSONObject} with the response
+     * @throws JSONException
+     */
+    public Mono<JSONObject> customMutatorAsync(HttpMethod method, String endpoint, JSONObject js) throws JSONException {
+        return this.handleMutatorAsync(endpoint + js.toString(), () -> {
+            return this.handleRequest(method, endpoint, js.toString());
+        });
     }
 
     /**
@@ -3148,6 +3202,229 @@ public class Helix {
 
         return this.handleQueryAsync(endpoint, () -> {
             return this.handleRequest(HttpMethod.GET, endpoint);
+        });
+    }
+
+    /**
+     * Adds a moderator to the broadcaster’s chat room.
+     *
+     * @param broadcaster_id The ID of the broadcaster that owns the chat room. This ID must match the user ID in the access token.
+     * @param user_id The ID of the user to add as a moderator in the broadcaster’s chat room.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject addChannelModerator(String broadcaster_id, String user_id)
+            throws JSONException, IllegalArgumentException {
+        return this.addChannelModeratorAsync(broadcaster_id, user_id).block();
+    }
+
+    /**
+     * Adds a moderator to the broadcaster’s chat room.
+     *
+     * @param broadcaster_id The ID of the broadcaster that owns the chat room. This ID must match the user ID in the access token.
+     * @param user_id The ID of the user to add as a moderator in the broadcaster’s chat room.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> addChannelModeratorAsync(String broadcaster_id, String user_id)
+            throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        if (user_id == null || user_id.isBlank()) {
+            throw new IllegalArgumentException("user_id");
+        }
+
+        String endpoint = "/moderation/moderators?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&user_id", user_id);
+
+        return this.handleMutatorAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.POST, endpoint, "", this.chooseModeratorOAuth("channel:manage:moderators"));
+        });
+    }
+
+    /**
+     * Removes a moderator from the broadcaster’s chat room.
+     *
+     * @param broadcaster_id The ID of the broadcaster that owns the chat room. This ID must match the user ID in the access token.
+     * @param user_id The ID of the user to remove as a moderator from the broadcaster’s chat room.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject removeChannelModerator(String broadcaster_id, String user_id)
+            throws JSONException, IllegalArgumentException {
+        return this.removeChannelModeratorAsync(broadcaster_id, user_id).block();
+    }
+
+    /**
+     * Removes a moderator from the broadcaster’s chat room.
+     *
+     * @param broadcaster_id The ID of the broadcaster that owns the chat room. This ID must match the user ID in the access token.
+     * @param user_id The ID of the user to remove as a moderator from the broadcaster’s chat room.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> removeChannelModeratorAsync(String broadcaster_id, String user_id)
+            throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        if (user_id == null || user_id.isBlank()) {
+            throw new IllegalArgumentException("user_id");
+        }
+
+        String endpoint = "/moderation/moderators?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&user_id", user_id);
+
+        return this.handleMutatorAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.DELETE, endpoint, "", this.chooseModeratorOAuth("channel:manage:moderators"));
+        });
+    }
+
+    /**
+     * Adds the specified user as a VIP in the broadcaster’s channel.
+     *
+     * @param broadcaster_id The ID of the broadcaster that’s adding the user as a VIP. This ID must match the user ID in the access token.
+     * @param user_id The ID of the user to give VIP status to.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject addChannelVIP(String broadcaster_id, String user_id)
+            throws JSONException, IllegalArgumentException {
+        return this.addChannelVIPAsync(broadcaster_id, user_id).block();
+    }
+
+    /**
+     * Adds the specified user as a VIP in the broadcaster’s channel.
+     *
+     * @param broadcaster_id The ID of the broadcaster that’s adding the user as a VIP. This ID must match the user ID in the access token.
+     * @param user_id The ID of the user to give VIP status to.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> addChannelVIPAsync(String broadcaster_id, String user_id)
+            throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        if (user_id == null || user_id.isBlank()) {
+            throw new IllegalArgumentException("user_id");
+        }
+
+        String endpoint = "/channels/vips?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&user_id", user_id);
+
+        return this.handleMutatorAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.POST, endpoint, "", this.chooseModeratorOAuth("channel:manage:vips"));
+        });
+    }
+
+    /**
+     * Removes the specified user as a VIP in the broadcaster’s channel.
+     *
+     * @param broadcaster_id The ID of the broadcaster who owns the channel where the user has VIP status.
+     * @param user_id The ID of the user to remove VIP status from.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject removeChannelVIP(String broadcaster_id, String user_id)
+            throws JSONException, IllegalArgumentException {
+        return this.removeChannelVIPAsync(broadcaster_id, user_id).block();
+    }
+
+    /**
+     * Removes the specified user as a VIP in the broadcaster’s channel.
+     *
+     * @param broadcaster_id The ID of the broadcaster who owns the channel where the user has VIP status.
+     * @param user_id The ID of the user to remove VIP status from.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> removeChannelVIPAsync(String broadcaster_id, String user_id)
+            throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        if (user_id == null || user_id.isBlank()) {
+            throw new IllegalArgumentException("user_id");
+        }
+
+        String endpoint = "/channels/vips?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&user_id", user_id);
+
+        return this.handleMutatorAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.DELETE, endpoint, "", this.chooseModeratorOAuth("channel:manage:vips"));
+        });
+    }
+
+    /**
+     * Sends a message to the broadcaster’s chat room.
+     * 
+     * @param use_app_token If {@c true}, uses the app (appoauth) token to send the message, and appears as a bot; otherwise, uses the bot (oauth) token.
+     * @param broadcaster_id The ID of the broadcaster whose chat room the message will be sent to.
+     * @param message The message to send. The message is limited to a maximum of 500 characters.
+     * @param for_source_only When using an app token, set {@c true} to only send the message to the chat room of the specified broadcaster;
+     * {@c false} to also send to other chats when shared chat is active. Ignored for user tokens.
+     * @param reply_parent_message_id The ID of the chat message being replied to.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject sendChatMessage(boolean use_app_token, String broadcaster_id, String message, boolean for_source_only, @Nullable String reply_parent_message_id) {
+        return this.sendChatMessageAsync(use_app_token, broadcaster_id, message, for_source_only, reply_parent_message_id).block();
+    }
+
+    /**
+     * Sends a message to the broadcaster’s chat room.
+     * 
+     * @param use_app_token If {@c true}, uses the app (appoauth) token to send the message, and appears as a bot; otherwise, uses the bot (oauth) token.
+     * @param broadcaster_id The ID of the broadcaster whose chat room the message will be sent to.
+     * @param message The message to send. The message is limited to a maximum of 500 characters.
+     * @param for_source_only When using an app token, set {@c true} to only send the message to the chat room of the specified broadcaster;
+     * {@c false} to also send to other chats when shared chat is active. Ignored for user tokens.
+     * @param reply_parent_message_id The ID of the chat message being replied to.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> sendChatMessageAsync(boolean use_app_token, String broadcaster_id, String message, boolean for_source_only, @Nullable String reply_parent_message_id) {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        if (message == null || message.isBlank()) {
+            throw new IllegalArgumentException("message");
+        }
+
+        JSONStringer js = new JSONStringer();
+
+        js.object()
+            .key("broadcaster_id").value(broadcaster_id)
+            .key("sender_id").value(TwitchValidate.instance().getChatUserID())
+            .key("message").value(message.substring(0, Math.min(message.length(), 500)));
+        
+        if (reply_parent_message_id != null && !reply_parent_message_id.isBlank()) {
+            js.key("reply_parent_message_id").value(reply_parent_message_id);
+        }
+
+        if (use_app_token) {
+            js.key("for_source_only").value(for_source_only);
+        }
+
+        js.endObject();
+
+        String endpoint = "/chat/messages";
+
+        return this.handleMutatorAsync(endpoint + js.toString(), () -> {
+            return this.handleRequest(HttpMethod.POST, endpoint, js.toString(), use_app_token ? CaselessProperties.instance().getProperty("appoauth").replaceFirst("oauth:", "") : null);
         });
     }
 

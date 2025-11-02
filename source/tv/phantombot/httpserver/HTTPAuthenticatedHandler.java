@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -378,8 +378,11 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
 
         if (msg.charAt(0) == '!') {
             PhantomBot.instance().handleCommand(user, msg.substring(1));
-        } else {
+        } else if (PhantomBot.instance().getSession() != null) {
             PhantomBot.instance().getSession().say(msg);
+        } else {
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SERVICE_UNAVAILABLE));
+            return;
         }
 
         com.gmt2001.Console.debug.println("200" + req.method().asciiName() + ": irc " + user + " -> " + msg);

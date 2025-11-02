@@ -76,6 +76,14 @@ the twitch developer application client secret
 
 &nbsp;
 
+#### commandprefix
+
+Data Type: _Char_
+
+a single character, used as the command prefix for twitch. default `'!'`
+
+&nbsp;
+
 #### offlinedelay
 
 Data Type: _Int_
@@ -105,6 +113,22 @@ if `true`, pull all followers into the cache on startup; otherwise, only the fir
 Data Type: _Boolean_
 
 if `true`, certain redirected chat commands are sent as the broadcaster. default `false`
+
+&nbsp;
+
+#### sendmessagestocasterchatonly
+
+Data Type: _Boolean_
+
+if `true`, chat messages sent using twitch api and an app token are only sent to the broadcasters chat, not to shared chats. default `true`
+
+&nbsp;
+
+#### sendmessagesasapp
+
+Data Type: _Boolean_
+
+if `true`, send chat messages using twitch api and an app token if possible, instead of irc. default `true`
 
 &nbsp;
 
@@ -221,7 +245,7 @@ _NOTE: A restart is required for this property to take effect_
 
 Data Type: _Boolean_
 
-if `true`, the database is backed up to the ./backups folder every so often. default `true`
+if `true`, the database is backed up to the ./backups folder every so often. default is based on preference of the driver. sqlitestore2 and h2store2 defeault to `true`
 
 &nbsp;
 
@@ -323,6 +347,14 @@ _NOTE: A restart is required for this property to take effect_
 Data Type: _Boolean_
 
 if `true`, the bots current discord activity (_playing foo_) is restored on startup. default `true`
+
+&nbsp;
+
+#### discordcommandprefix
+
+Data Type: _Char_
+
+a single character, used as the command prefix for discord. default `'!'`
 
 &nbsp;
 
@@ -625,28 +657,3 @@ Data Type: _Boolean_
 if `true`, enables the rhino debugger console. default `false`
 
 _NOTE: A restart is required for this property to take effect_
-
-&nbsp;
-
-### Uncategorized
-#### commandprefix
-
-Data Type: _Char_
-
-No definition
-
-&nbsp;
-
-#### datastoreconfig
-
-Data Type: _String_
-
-No definition
-
-&nbsp;
-
-#### discordcommandprefix
-
-Data Type: _Char_
-
-No definition

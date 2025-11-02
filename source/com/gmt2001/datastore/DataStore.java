@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.jooq.Configuration;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.InsertValuesStep3;
@@ -58,6 +59,10 @@ import tv.phantombot.PhantomBot;
 @SuppressWarnings({"removal"})
 public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteStore {
     private static final DataStore INSTANCE = new DataStore(null);
+    /**
+     * Table name prefix for all tables created as {@link SectionVariableValueTable}
+     */
+    public static final String PREFIX = "phantombot_";
     /**
      * Provides an instance of {@link DataStore}
      *
@@ -102,11 +107,11 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @return an {@link Optional} which contains the matching {@link Table}, if found
      */
     public Optional<Table<?>> findTable(String fName) {
-        if (fName.startsWith("phantombot_")) {
+        if (fName.startsWith(DataStore.PREFIX)) {
             fName = fName.substring(11);
         }
         final String ffName = fName;
-        return Datastore2.instance().tables().stream().filter(t -> t.getName().equalsIgnoreCase("phantombot_" + ffName)).findFirst();
+        return Datastore2.instance().tables().stream().filter(t -> t.getName().equalsIgnoreCase(DataStore.PREFIX + ffName)).findFirst();
     }
 
     /**
@@ -137,7 +142,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @return an array of table names
      */
     public String[] GetFileList() {
-        return Datastore2.instance().meta().getTables().stream().filter(t -> t.getName().toLowerCase().startsWith("phantombot_"))
+        return Datastore2.instance().meta().getTables().stream().filter(t -> t.getName().toLowerCase().startsWith(DataStore.PREFIX))
             .map(t -> t.getName().replaceFirst("(?i)phantombot_", "")).collect(Collectors.toList()).toArray(new String[0]);
     }
 
@@ -672,7 +677,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @return an {@link Optional} that may contain a {@link SectionVariableValueRecord} if the row exists
      */
     public Optional<SectionVariableValueRecord> OptRecord(String fName, String section, String key) {
-        SectionVariableValueTable table = SectionVariableValueTable.instance("phantombot_" + fName);
+        SectionVariableValueTable table = SectionVariableValueTable.instance(DataStore.PREFIX + fName);
 
         if (table == null) {
             return Optional.empty();
@@ -690,7 +695,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @return an {@link Optional} that may contain a {@link SectionVariableValueRecord} if the row exists
      */
     public Optional<SectionVariableValueRecord> OptRecord(SectionVariableValueTable table, String section, String key) {
-        return this.OptRecord(table, section, key, false);
+        return this.OptRecord(dsl(), table, section, key, false);
     }
 
     /**
@@ -698,20 +703,21 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * <p>
      * If a JOOQ constraint failure occurs due to duplicate (SECTION, VARIABLE), a backup is created, duplicates are dropped, and the SQL constraint is added
      *
+     * @param context the {@link DSLContext} to execute on
      * @param table the table to search
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param key the value of the {@code variable} column to retrieve
      * @param isRetry if {@code false}, a {@link TooManyRowsException} triggers dropping duplicate data; otherwise, the exception is re-thrown up the stack
      * @return an {@link Optional} that may contain a {@link SectionVariableValueRecord} if the row exists
      */
-    private Optional<SectionVariableValueRecord> OptRecord(SectionVariableValueTable table, String section, String key, boolean isRetry) {
+    private Optional<SectionVariableValueRecord> OptRecord(DSLContext context, SectionVariableValueTable table, String section, String key, boolean isRetry) {
         Optional<SectionVariableValueRecord> res;
 
         try {
             if (section == null) {
-                res = dsl().fetchOptional(table, table.VARIABLE.eq(key));
+                res = context.fetchOptional(table, table.VARIABLE.eq(key));
             } else {
-                res = dsl().fetchOptional(table, table.SECTION.eq(section), table.VARIABLE.eq(key));
+                res = context.fetchOptional(table, table.SECTION.eq(section), table.VARIABLE.eq(key));
             }
         } catch (TooManyRowsException ex) {
             if (isRetry) {
@@ -720,7 +726,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
                 String timestamp = LocalDateTime.now(PhantomBot.getTimeZoneId()).format(DateTimeFormatter.ofPattern("ddMMyyyy.hhmmss"));
                 this.backupDB("before_duplicate_drop_" + table.getName() + "_" + timestamp);
                 table.dropDuplicateData();
-                return this.OptRecord(table, section, key, true);
+                return this.OptRecord(context, table, section, key, true);
             }
         }
 
@@ -778,7 +784,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param value the new value of the {@code value} column
      */
     public void SetString(String fName, String section, String key, String value) {
-        SectionVariableValueTable table = SectionVariableValueTable.instance("phantombot_" + fName);
+        SectionVariableValueTable table = SectionVariableValueTable.instance(DataStore.PREFIX + fName);
         SectionVariableValueRecord record = this.OptRecord(table, section, key)
             .orElseGet(() -> new SectionVariableValueRecord(table, section, key, value));
         record.value(value);
@@ -815,7 +821,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
             return;
         }
 
-        SectionVariableValueTable table = SectionVariableValueTable.instance("phantombot_" + fName, false);
+        SectionVariableValueTable table = SectionVariableValueTable.instance(DataStore.PREFIX + fName, false);
 
         if (table != null) {
             final int famount = amount;
@@ -872,7 +878,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param values the new values to set the {@code value} column to
      */
     public void SetBatchString(String fName, String section, String[] keys, String[] values) {
-        SectionVariableValueTable table = SectionVariableValueTable.instance("phantombot_" + fName);
+        SectionVariableValueTable table = SectionVariableValueTable.instance(DataStore.PREFIX + fName);
 
         if (table != null) {
             dsl().batched(c -> {
@@ -957,6 +963,41 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
         String sval = Long.toString(value);
 
         SetString(fName, section, key, sval);
+    }
+
+    /**
+     * Changes the value of the {@code value} column for the given table, section, and key as a long,
+     * only if the record is unmodified from {@code orig} or does not exist
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
+     * @param orig the original value of the {@code value} column. Any value if the record does not exist
+     * @param value the new value to store in the {@code value} column
+     * 
+     * @return {@code true} on success
+     */
+    public boolean SafeChangeLong(String fName, String section, String key, long orig, long value) {
+        String origsval = Long.toString(orig);
+        String sval = Long.toString(value);
+        SectionVariableValueTable table = SectionVariableValueTable.instance(DataStore.PREFIX + fName);
+
+        if (table == null) {
+            return false;
+        }
+
+        Configuration c = dsl().configuration().derive();
+        c.settings().setExecuteWithOptimisticLocking(true);
+        c.settings().setExecuteWithOptimisticLockingExcludeUnversioned(false);
+        SectionVariableValueRecord record = this.OptRecord(c.dsl(), table, section, key, false)
+            .orElseGet(() -> new SectionVariableValueRecord(table, section, key, origsval));
+        long origdval = Long.valueOf(record.value());
+        if (origdval != orig) {
+            return false;
+        }
+        record.value(sval);
+        record.changed(true);
+        return record.merge() == 1;
     }
 
     /**
@@ -1746,6 +1787,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      *
      * @return {@code true} if backups are supported
      */
+    @Deprecated(since = "3.15.3.0")
     public boolean canBackup() {
         return Datastore2.instance().supportsBackup();
     }
@@ -1755,6 +1797,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      *
      * @param filename The filename for the backup, without extension
      */
+    @Deprecated(since = "3.15.3.0")
     public void backupDB(String filename) {
         Datastore2.instance().backup(filename);
     }
