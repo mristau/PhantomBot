@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2026 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -183,8 +183,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
                 } else {
                     com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
                             + HttpServerPageHandler.detectContentType(p.getFileName().toString()) + ")");
-                    HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK,
-                            req.method().equals(HttpMethod.HEAD) ? null : Files.readAllBytes(p), p.getFileName().toString()));
+                    HttpServerPageHandler.sendFile(ctx, req, p);
                 }
             }
         } catch (IOException ex) {
@@ -236,7 +235,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
                         + "<span>" + data.substring(0, Math.min(data.length(), len)) + "&nbsp;</span>"
                         + "</div></div></body></html>";
             } else {
-                ret = "<html><head><meta http-equiv=\"refresh\" content=\"5\" /></head><body>" + Files.readString(p) + "</body></html>";
+                ret = "<html><head><meta http-equiv=\"refresh\" content=\"5\" /></head><body>" + (qsd.parameters().containsKey("span") ? "<span>" : "") + Files.readString(p) + (qsd.parameters().containsKey("span") ? "</span>" : "") + "</body></html>";
             }
 
             com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "

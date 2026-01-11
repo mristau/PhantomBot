@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2026 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,7 +63,14 @@
         if (whisperMode || force) {
             return '/w ' + username + ' ';
         }
-        return '@' + $.viewer.getByLogin(username).name() + ', ';
+        let viewer = $.viewer.getByLogin(username);
+        if (viewer !== null) {
+            let name = viewer.name();
+            if (name !== null) {
+                username = name;
+            }
+        }
+        return '@' + username + ', ';
     }
 
     /**

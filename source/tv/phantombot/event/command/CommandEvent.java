@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2026 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,6 +62,9 @@ public class CommandEvent extends Event {
         }
         if (command == null) {
             throw new NullPointerException("command");
+        }
+        if (command.isBlank()) {
+            throw new IllegalArgumentException("command");
         }
         if (command.charAt(0) == CaselessProperties.instance().getPropertyAsChar("commandprefix", '!')) {
             command = command.substring(1);

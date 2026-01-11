@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2026 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,7 +52,6 @@ import com.gmt2001.twitch.TwitchClientCredentialsFlow;
 import com.gmt2001.twitch.cache.ViewerCache;
 import com.gmt2001.twitch.eventsub.EventSub;
 import com.gmt2001.twitch.tmi.TwitchMessageInterface;
-import com.gmt2001.util.GamesListUpdater;
 import com.gmt2001.util.Reflect;
 import com.gmt2001.util.RestartRunner;
 import com.gmt2001.util.concurrent.ExecutorService;
@@ -314,7 +313,7 @@ public final class PhantomBot implements Listener {
         this.authflow = new TwitchAuthorizationCodeFlow(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"));
         boolean authflowrefreshed = this.authflow.checkAndRefreshTokens();
         this.appflow = new TwitchClientCredentialsFlow(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"));
-        this.appflow.checkAndRefreshToken();
+        this.appflow.checkAndRefreshToken(true);
         if (authflowrefreshed) {
             ConfigurationManager.getConfiguration();
         }
@@ -1051,7 +1050,9 @@ public final class PhantomBot implements Listener {
     public void command(CommandEvent event) {
         if (event.getCommand().equals("pbinternalping")) {
             event.handeled();
-            this.tmi.sendPing();
+            if (this.tmi != null && this.tmi.connected()) {
+                this.tmi.sendPing();
+            }
         }
     }
 
@@ -1370,13 +1371,6 @@ public final class PhantomBot implements Listener {
                 } catch (JSONException ex) {
                     com.gmt2001.Console.err.logStackTrace(ex);
                 }
-            }
-
-            try {
-                Thread.sleep(30000);
-                GamesListUpdater.update();
-            } catch (InterruptedException | JSONException ex) {
-                com.gmt2001.Console.err.logStackTrace(ex);
             }
         }, 0, 24, TimeUnit.HOURS);
     }

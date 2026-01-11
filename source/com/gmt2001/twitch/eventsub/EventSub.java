@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2026 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -399,7 +399,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
      */
     private void cleanupSubscriptions() {
         this.subscriptions.forEach((id, subscription) -> {
-            if (subscription.status() != SubscriptionStatus.ENABLED) {
+            if (subscription.status() != SubscriptionStatus.ENABLED || !subscription.transport().sessionId().equals(this.session_id)) {
                 this.subscriptions.remove(id);
             }
         });

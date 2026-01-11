@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
+# Copyright (C) 2016-2026 phantombot.github.io/PhantomBot
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ def parse_file(fpath, lines):
             line = line[2:].strip()
             if line.startswith("@consolecommand"):
                 line = line[16:].strip()
-                cmd_pos = line.find("-")
+                cmd_pos = line.find(" - ")
                 if cmd_pos == -1:
                     cmd_pos = len(line)
                 cmd = line[0:cmd_pos].strip()

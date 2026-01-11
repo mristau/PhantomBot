@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2026 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,6 @@ import com.gmt2001.datastore2.MariaDBStore2;
 import com.gmt2001.datastore2.MySQLStore2;
 import com.gmt2001.datastore2.SQLiteStore2;
 import com.gmt2001.twitch.tmi.TwitchMessageInterface;
-import com.gmt2001.util.GamesListUpdater;
 import com.gmt2001.util.Reflect;
 
 import net.engio.mbassy.listener.Handler;
@@ -143,13 +142,6 @@ public final class ConsoleEventHandler implements Listener {
          */
         if (message.equalsIgnoreCase("forceoauthrefresh")) {
             PhantomBot.instance().getAuthFlow().refresh();
-        }
-
-        /**
-         * @consolecommand updategameslist - Force a full update of the games list.
-         */
-        if (message.equalsIgnoreCase("updategameslist")) {
-            GamesListUpdater.update(true);
         }
 
         /**

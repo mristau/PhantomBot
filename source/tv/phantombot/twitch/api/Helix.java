@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2026 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -214,8 +214,12 @@ public class Helix {
         return value != null && !value.isBlank() ? key + "=" + value : "";
     }
 
-    private String qspValid(String key, int value) {
-        return this.qspValid(key, Integer.toString(value));
+    private String qspValid(String key, Integer value) {
+        return value != null ? this.qspValid(key, Integer.toString(value)) : "";
+    }
+
+    private String qspValid(String key, Float value) {
+        return value != null ? this.qspValid(key, Float.toString(value)) : "";
     }
 
     /**
@@ -1289,6 +1293,46 @@ public class Helix {
 
         return this.handleQueryAsync(endpoint, () -> {
             return this.handleRequest(HttpMethod.GET, endpoint);
+        });
+    }
+
+    /**
+     * Creates a clip from the broadcaster's stream.
+     *
+     * @param broadcaster_id The ID of the broadcaster whose stream you want to create a clip from.
+     * @param duration The length of the clip in seconds. Possible values range from 5 to 60 inclusively with a precision of 0.1. The default is 30.
+     * @param title The title of the clip.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject createClip(String broadcaster_id, @Nullable Float duration, @Nullable String title) throws JSONException, IllegalArgumentException {
+        return this.createClipAsync(broadcaster_id, duration, title).block();
+    }
+
+    /**
+     * Creates a clip from the broadcaster's stream.
+     *
+     * @param broadcaster_id The ID of the broadcaster whose stream you want to create a clip from.
+     * @param duration The length of the clip in seconds. Possible values range from 5 to 60 inclusively with a precision of 0.1. The default is 30.
+     * @param title The title of the clip.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> createClipAsync(String broadcaster_id, @Nullable Float duration, @Nullable String title) throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        if (duration != null) {
+            duration = Math.min(Math.max(duration, 60f), 5f);
+        }
+
+        String endpoint = "/clips?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&title", this.uriEncode(title))+ this.qspValid("&duration", duration);
+
+        return this.handleMutatorAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.POST, endpoint);
         });
     }
 

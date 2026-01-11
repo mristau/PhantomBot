@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2026 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -136,11 +136,8 @@ $(function () {
                     values: [moderationLogs, modLogChat, customCommandLog, logChannel.val()]
                 }, function () {
                     // Update the scripts variables.
-                    socket.wsEvent('discord_logs', './core/logging.js', '', [], function () {
-                        socket.sendCommand('moderation_reload_settings', 'reloadmoderation', function () {
-                            // Alert the user.
-                            toastr.success('Successfully updated the logs settings!');
-                        });
+                    socket.wsEvent('discord_logs', './discord/core/moderation.js', '', [], function () {
+                        toastr.success('Successfully updated the logs settings!');
                     });
                 });
         }

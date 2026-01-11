@@ -1,6 +1,6 @@
 <!--
 
- Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
+ Copyright (C) 2016-2026 phantombot.github.io/PhantomBot
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -27,6 +27,9 @@
     <link rel="stylesheet" href="/alerts/css/animate.min.css"/>
     <!-- Main styles. -->
     <style>
+        :root {
+            --fadeTime: 200ms;
+        }
         body {
             background-color: transparent;
         }
@@ -72,10 +75,20 @@
             left: 0;
             height: 100%;
             width: 100%;
+            opacity: 1 !important;
         }
 
         .animatedEmote {
             position: fixed;
+        }
+        
+        .fade-in {
+          opacity: 1 !important;
+          transition: opacity var(--fadeTime) ease-in;
+        }
+        .fade-out {
+          opacity: 0 !important;
+          transition: opacity var(--fadeTime) ease-out;
         }
     </style>
 
@@ -86,6 +99,7 @@
 <!-- Main body -->
 <body>
     <div id="main-video-clips">
+        <video id="alertVideo" autoplay="false"></video>
         <!-- Where the video clips are played. -->
     </div>
     <div id="main-emotes">
@@ -93,11 +107,12 @@
     </div>
     <div class="main-alert">
         <!-- Where the gif gets played. -->
-        <div id="alert"></div>
+        <img id="alert" class="fade-out"></img>
+        <audio id="alertAudio" autoplay="false"></audio>
     </div>
     <div class="main-text-alert">
         <!-- Where the custom gif text is displayed. -->
-        <div id="alert-text"></div>
+        <div id="alert-text" style="display:none"></div>
     </div>
 
     <!-- jQuery -->

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2026 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -129,6 +129,39 @@
             var url = $.getIniDbString('streamInfo', 'most_viewed_clip_url', $.lang.get('cliphandler.noclip'));
             $.say($.whisperPrefix(sender) + $.lang.get('cliphandler.topclip', url));
         }
+
+        /*
+         * @commandpath clipit (-d duration) (title) - Creates a clip, optionally setting the initial duration and title.
+         */
+        if ($.equalsIgnoreCase(command, 'clipit')) {
+            let duration = null;
+            let title = null;
+            if (($.equalsIgnoreCase(args[0], '-d') || $.equalsIgnoreCase(args[0], '--duration')) && args.length > 1) {
+                duration = parseFloat(args[1]);
+                argsString = $.jsString(argsString);
+                argsString = argsString.substring(argsString.indexOf(args[1]) + $.strlen(args[1])).trim();
+            }
+            if ($.strlen(argsString) > 0) {
+                title = argsString;
+            }
+            let clipdata = $.helix.createClip($.viewer.broadcaster().id(), duration, title);
+            if (clipdata.getInt('_http') == 202) {
+                clipdata = clipdata.getJSONArray('data').getJSONObject(0);
+                let creator = $.viewer.getByLogin(sender);
+                $.inidb.set('clipit', clipdata.getString('id'), JSON.stringify({
+                    'timestamp': $.systemTime(),
+                    'edit_url': clipdata.getString('edit_url'),
+                    'creator_login': creator.login(),
+                    'creator_displayname': creator.name(),
+                    'creator_id': creator.id(),
+                    'title': title,
+                    'duration': duration
+                }));
+                $.say($.whisperPrefix(sender) + $.lang.get('cliphandler.clipit.success', clipdata.getString('id')));
+            } else {
+                $.say($.whisperPrefix(sender) + $.lang.get('cliphandler.clipit.' + clipdata.getInt('_http')));
+            }
+        }
     });
 
     /*
@@ -139,6 +172,7 @@
         $.registerChatCommand('./handlers/clipHandler.js', 'clipsmessage', $.PERMISSION.Admin);
         $.registerChatCommand('./handlers/clipHandler.js', 'lastclip', $.PERMISSION.Viewer);
         $.registerChatCommand('./handlers/clipHandler.js', 'topclip', $.PERMISSION.Viewer);
+        $.registerChatCommand('./handlers/clipHandler.js', 'clipit', $.PERMISSION.Mod);
     });
 
     $.reloadClips = reloadClips;

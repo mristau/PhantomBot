@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2026 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,12 +62,16 @@ public class TwitchClientCredentialsFlow {
     }
 
     public boolean checkAndRefreshToken() {
+        return checkAndRefreshToken(false);
+    }
+
+    public boolean checkAndRefreshToken(boolean force) {
         Transaction refreshTransaction = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_NORMAL);
 
         Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
         c.setTimeInMillis(CaselessProperties.instance().getPropertyAsLong("appexpires", 0L));
         c.add(Calendar.MILLISECOND, -((int) REFRESH_INTERVAL) - 1000);
-        if (c.after(Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC)))) {
+        if (!force && c.after(Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC)))) {
             com.gmt2001.Console.debug.println("app=f");
             return false;
         }
@@ -90,12 +94,12 @@ public class TwitchClientCredentialsFlow {
     }
 
     synchronized void startup(String clientid, String clientsecret) {
-        if (this.timerStarted) {
-            com.gmt2001.Console.debug.println("timer exists");
-            return;
-        }
-
         if (clientid != null && !clientid.isBlank() && clientsecret != null && !clientsecret.isBlank()) {
+            if (this.timerStarted) {
+                com.gmt2001.Console.debug.println("timer exists");
+                this.checkAndRefreshToken(true);
+                return;
+            }
             com.gmt2001.Console.debug.println("starting timer");
             ExecutorService.scheduleAtFixedRate(() -> {
                 checkAndRefreshToken();

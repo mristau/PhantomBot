@@ -53,7 +53,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: Set up QEMU
       if: matrix.qemu == true
       uses: docker/setup-qemu-action@v3
@@ -99,7 +99,7 @@ jobs:
         chmod +x $SCRIPT
         /bin/bash $SCRIPT
     - name: Upload artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: ${{ matrix.folder }}
         path: resources/${{ matrix.folder }}/**
@@ -111,11 +111,11 @@ jobs:
     needs: updatejlink
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         token: ${{ secrets.GH_TOKEN }}
     - name: Download Artifacts
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v7
       with:
         path: resources
     - name: Commit Changes

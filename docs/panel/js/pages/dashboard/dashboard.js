@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2026 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -279,6 +279,7 @@ $(function () {
 
     $('#stream-game').select2({
         ajax: {
+            delay: 500,
             transport: async function(params, success, failure) {
                 getGames(params);
 
@@ -291,7 +292,8 @@ $(function () {
                 }
             }
         },
-        tags: true,
+        minimumInputLength: 1,
+        tags: false,
         width: '100%'
     });
 
